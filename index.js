@@ -7,6 +7,9 @@ module.exports = function createReleasePR (config) {
   var client = new GithubClient(config)
 
   return client.prepareReleasePR().then(function (releasePR) {
+    if (!releasePR) {
+      return null
+    }
     return client.collectReleasePRs(releasePR).then(function (prs) {
       var template = fs.readFileSync(__dirname + '/release.mustache', 'utf8')
       var message = releaseMessage(template, prs)
